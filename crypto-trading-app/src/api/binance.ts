@@ -1,6 +1,12 @@
 import type { Candle } from "../types";
 
-const BASE_URL = "https://api.binance.com/api/v3/klines";
+// api.binance.com blocks requests from US IP addresses for regulatory
+// reasons. api.binance.us is Binance's US-compliant sibling with the same
+// endpoint shape, so we fall back to it when the primary host is unreachable.
+const BASE_URLS = [
+  "https://api.binance.com/api/v3/klines",
+  "https://api.binance.us/api/v3/klines",
+];
 
 export interface CoinDef {
   symbol: string; // Binance symbol, e.g. BTCUSDT
@@ -27,18 +33,29 @@ export async function fetchCandles(
   interval: Timeframe = "4h",
   limit = 200,
 ): Promise<Candle[]> {
-  const url = `${BASE_URL}?symbol=${encodeURIComponent(symbol)}&interval=${interval}&limit=${limit}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`Binance API error ${res.status} for ${symbol}`);
+  let lastError: unknown;
+
+  for (const base of BASE_URLS) {
+    const url = `${base}?symbol=${encodeURIComponent(symbol)}&interval=${interval}&limit=${limit}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        lastError = new Error(`Binance API error ${res.status} for ${symbol} (${base})`);
+        continue;
+      }
+      const raw = (await res.json()) as unknown[][];
+      return raw.map((k) => ({
+        openTime: k[0] as number,
+        open: parseFloat(k[1] as string),
+        high: parseFloat(k[2] as string),
+        low: parseFloat(k[3] as string),
+        close: parseFloat(k[4] as string),
+        volume: parseFloat(k[5] as string),
+      }));
+    } catch (err) {
+      lastError = err; // network/CORS failure (e.g. geo-blocked) — try the next host
+    }
   }
-  const raw = (await res.json()) as unknown[][];
-  return raw.map((k) => ({
-    openTime: k[0] as number,
-    open: parseFloat(k[1] as string),
-    high: parseFloat(k[2] as string),
-    low: parseFloat(k[3] as string),
-    close: parseFloat(k[4] as string),
-    volume: parseFloat(k[5] as string),
-  }));
+
+  throw lastError instanceof Error ? lastError : new Error(`Failed to fetch candles for ${symbol}`);
 }
