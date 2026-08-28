@@ -28,7 +28,7 @@ async function fetchBoostedSolanaTokenAddresses(limit = 30): Promise<string[]> {
 }
 
 /** Fetch live pair data (price, volume, liquidity, age, txns) for a batch of token addresses. */
-async function fetchPairsForTokens(addresses: string[]): Promise<DexPair[]> {
+export async function fetchPairsForTokens(addresses: string[]): Promise<DexPair[]> {
   if (addresses.length === 0) return [];
   // DexScreener accepts up to 30 comma-separated addresses per call.
   const url = `${TOKENS_URL}/${addresses.join(",")}`;

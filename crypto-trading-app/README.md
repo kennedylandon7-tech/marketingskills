@@ -1,61 +1,50 @@
-# Crypto Setup Scanner
+# Runner Scanner
 
-A client-side dashboard with two tabs:
-
-- **Majors** — confluence-based technical setups on major crypto pairs, with
-  pre-defined, risk-managed trade plans (entry, stop-loss, three take-profit
-  levels, stated risk-to-reward).
-- **🔥 Trending (Solana)** — live discovery of new/active Solana tokens with
-  computed risk flags (liquidity, age, float concentration, buy/sell
-  pressure). No trade setup or buy signal here — this asset class doesn't
-  support one honestly. Includes a read-only "Connect Phantom" wallet button.
+A live discovery dashboard for new/active Solana tokens — for daily coin
+sniping. Real-time-moving price sparklines, computed risk flags, and a
+one-click manual trade link. No trade signals, no automated trading.
 
 ## What this is (and isn't)
 
-No tool can reliably predict where crypto prices will go — treat anything that
+No tool can reliably predict where a meme coin will go — treat anything that
 claims otherwise with suspicion.
 
-**Majors tab:**
-- Pulls live OHLCV candles for 10 major pairs from Binance's public market-data
-  API (falls back to `api.binance.us` if the primary host is geo-blocked).
-- Computes standard technical indicators: EMA(20/50) trend structure, MACD
-  histogram momentum, RSI(14), ATR(14) for volatility, and recent swing
-  highs/lows for market structure.
-- Scores how many of those signals agree. A trade setup (long or short) is only
-  surfaced when confluence is strong (≥60%); otherwise the card explicitly says
-  **"no setup"** rather than forcing a trade.
-- When a setup exists, risk is defined *before* any entry: stop-loss is placed
-  using ATR and recent structure, and take-profits are computed as fixed
-  multiples of that risk (R), so risk-to-reward is known upfront.
-- Includes a position-size calculator: enter your account size and risk % per
-  trade, and it computes how much to actually risk in dollars and units.
-
-**Trending (Solana) tab:**
 - Discovers active Solana tokens via DexScreener's public token-boosts feed
-  (this is a paid-promotion list, used purely for discovery — it is **not**
-  itself a quality or trending signal, and the UI says so).
-- Pulls live pair data (price, liquidity, volume, age, buy/sell transaction
-  counts) for each discovered token from DexScreener's public API.
+  (a paid-promotion list, used purely for discovery — it is **not** itself a
+  quality or trending signal, and the UI says so).
+- Pulls live pair data every ~10 seconds (price, liquidity, volume, age,
+  buy/sell transaction counts) for each discovered token, so the sparkline on
+  each card genuinely moves in near-real time. Which tokens are shown re-sorts
+  every ~60 seconds (a separate, slower discovery pass) so the grid doesn't
+  reshuffle on every price tick.
 - Computes a risk assessment per token: liquidity depth, pair age, FDV/liquidity
   ratio (float concentration proxy), recent buy/sell pressure, and how extreme
   the recent price move already is. The floor is always "medium risk" — nothing
-  here is ever labeled safe, because brand-new/thinly-traded tokens aren't.
-  A large share of tokens in this category lose most or all of their value,
-  and some are outright scams.
+  here is ever labeled safe, because brand-new/thinly-traded tokens aren't. A
+  large share of tokens in this category lose most or all of their value, and
+  some are outright scams.
 - Sorts by a momentum score (volume relative to liquidity, weighted by price
   move) so the most "active" tokens surface first — this is about visibility,
   not a recommendation.
-- **No buy/sell signal, no trade setup, no in-app trading.** This is discovery
-  + risk data only. Verify contracts and liquidity yourself (e.g. on
-  DexScreener, Solscan) before doing anything with real money.
+- **No buy/sell signal, no trade setup, no in-app trading, no auto-copy-trading
+  from other wallets.** A "Trade on Jupiter" button on each card deep-links to
+  Jupiter's swap UI for that token, for a fast *manual* path if you choose to
+  act — the app itself never executes or signs anything.
 
-**Phantom wallet connect:**
-- Read-only. Requests only the public key (`connect()`), never transaction
-  signing. Shows the connected address and live SOL balance (via Solana's
-  public RPC). There's no "send," "swap," or "sign" anywhere in this app.
+**Why no whale-copy-trading:** attributing on-chain transactions to a specific
+"whale" wallet reliably needs a paid indexer (the free public data available
+here isn't good enough to trust), and getting that attribution wrong — showing
+a false "whale just bought" signal — is worse than not having the feature. The
+buy/sell pressure bar on each card is real data straight from DexScreener, not
+an inference, which is why that's what's shown instead.
 
-This is a decision-support and market-data tool, not a signal service and not
-investment advice. It does not place any trades — it's read-only analysis.
+**Phantom wallet connect:** read-only. Requests only the public key
+(`connect()`), never transaction signing. Shows the connected address and live
+SOL balance (via Solana's public RPC). There's no "send," "swap," or "sign"
+anywhere in this app.
+
+This is a market-data and risk-visibility tool, not a signal service and not
+investment advice.
 
 ## Running it
 
@@ -64,8 +53,7 @@ npm install
 npm run dev
 ```
 
-Then open the printed local URL. The Majors tab auto-refreshes every 60
-seconds; the Trending tab every 45 seconds.
+Then open the printed local URL.
 
 To build a static production bundle:
 
@@ -78,32 +66,26 @@ npm run preview
 
 ```
 src/
-  api/binance.ts            Binance klines client (majors), with binance.us fallback
-  api/dexscreener.ts         DexScreener client: token discovery + live pair data (trending)
-  hooks/usePhantomWallet.ts   Read-only Phantom connect/disconnect + SOL balance
-  lib/indicators.ts           EMA, RSI, MACD, ATR, swing high/low helpers (majors)
-  lib/signals.ts               Confluence scoring + trade setup (majors)
-  lib/riskScore.ts              Risk flags + level for trending tokens (no buy/sell signal)
+  api/dexscreener.ts          Token discovery (boosts feed) + live pair data
+  hooks/usePhantomWallet.ts    Read-only Phantom connect/disconnect + SOL balance
+  lib/riskScore.ts              Risk flags + level per token (no buy/sell signal)
   components/
-    MajorsView.tsx               Majors tab: coin grid, timeframe switch, polling
-    TrendingView.tsx             Trending tab: token grid, wallet connect, polling
-    CoinCard.tsx / Chart.tsx / RiskCalculator.tsx   Majors tab components
-    TrendingTokenCard.tsx        Per-token risk card
-    WalletConnect.tsx            Phantom connect/disconnect UI
-    Disclaimer.tsx
-  App.tsx                        Tab shell (Majors / Trending)
+    TrendingView.tsx              Two-tier polling: 60s discovery, 10s live price ticks
+    TrendingTokenCard.tsx         Per-token card: sparkline, pressure bar, risk flags, trade link
+    Sparkline.tsx                 Dependency-free live-updating SVG chart
+    WalletConnect.tsx             Phantom connect/disconnect UI
+  App.tsx                         Header + TrendingView
 ```
 
 ## Extending it
 
-- Add more majors pairs by editing `DEFAULT_COINS` in `src/api/binance.ts`.
-- Tune majors signal strictness in `src/lib/signals.ts`.
-- Tune trending risk thresholds/weights in `src/lib/riskScore.ts`.
+- Tune risk thresholds/weights in `src/lib/riskScore.ts`.
+- Tune poll cadence (`DISCOVERY_MS`, `PRICE_TICK_MS`) in `TrendingView.tsx`.
 - DexScreener's public API has no organic "trending" endpoint without a paid
-  key — the boosts feed is a reasonable free proxy for "active token pool,"
-  but if you get API access to something better (Birdeye, etc.), swap it in
-  `src/api/dexscreener.ts`.
+  key — the boosts feed is a reasonable free proxy for "active token pool."
+  If you get access to a paid indexer (Birdeye, Helius, etc.), that's also
+  where reliable whale-wallet attribution would become feasible.
 - This intentionally does not execute trades or request transaction signing
   anywhere. If you want in-app swaps, that's a separate, carefully reviewed
-  addition — it moves this from an analysis tool to something that can lose
+  addition — it moves this from a discovery tool to something that can lose
   real money on a bug or a malicious RPC response.

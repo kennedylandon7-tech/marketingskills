@@ -1,4 +1,5 @@
 import type { TrendingToken } from "../types";
+import Sparkline from "./Sparkline";
 
 function fmtUsd(n: number | null | undefined) {
   if (n === null || n === undefined) return "—";
@@ -28,9 +29,23 @@ function fmtAge(createdAt: number | null) {
   return `${Math.round(hours / 24)}d`;
 }
 
-export default function TrendingTokenCard({ token }: { token: TrendingToken }) {
+function jupiterSwapUrl(mint: string) {
+  return `https://jup.ag/swap/SOL-${mint}`;
+}
+
+interface Props {
+  token: TrendingToken;
+  priceHistory: number[];
+}
+
+export default function TrendingTokenCard({ token, priceHistory }: Props) {
   const { pair, risk } = token;
   const h1Change = pair.priceChange?.h1;
+  const txns = pair.txns?.h1;
+  const buys = txns?.buys ?? 0;
+  const sells = txns?.sells ?? 0;
+  const totalTxns = buys + sells;
+  const buyPct = totalTxns > 0 ? (buys / totalTxns) * 100 : 50;
 
   return (
     <div className={`token-card risk-${risk.level}`}>
@@ -42,15 +57,24 @@ export default function TrendingTokenCard({ token }: { token: TrendingToken }) {
         <span className={`risk-badge risk-badge-${risk.level}`}>{risk.level} risk</span>
       </div>
 
+      <Sparkline prices={priceHistory} height={64} />
+
+      <div className="token-price-row">
+        <span className="token-price">{fmtPrice(pair.priceUsd)}</span>
+        <span className={`token-change ${h1Change && h1Change >= 0 ? "v-tp" : "v-stop"}`}>
+          {fmtPct(h1Change)} <span className="token-change-label">1h</span>
+        </span>
+      </div>
+
+      <div className="pressure-bar" title={`${buys} buys / ${sells} sells in the last hour`}>
+        <div className="pressure-bar-buy" style={{ width: `${buyPct}%` }} />
+      </div>
+      <div className="pressure-labels">
+        <span className="v-tp">{buys} buys</span>
+        <span className="v-stop">{sells} sells</span>
+      </div>
+
       <div className="token-stats-grid">
-        <div>
-          <span className="k">Price</span>
-          <span className="v">{fmtPrice(pair.priceUsd)}</span>
-        </div>
-        <div>
-          <span className="k">1h change</span>
-          <span className={`v ${h1Change && h1Change >= 0 ? "v-tp" : "v-stop"}`}>{fmtPct(h1Change)}</span>
-        </div>
         <div>
           <span className="k">Liquidity</span>
           <span className="v">{fmtUsd(pair.liquidity?.usd)}</span>
@@ -75,9 +99,14 @@ export default function TrendingTokenCard({ token }: { token: TrendingToken }) {
         ))}
       </ul>
 
-      <a className="token-link" href={pair.url} target="_blank" rel="noreferrer">
-        View on DexScreener →
-      </a>
+      <div className="token-card-actions">
+        <a className="trade-btn" href={jupiterSwapUrl(pair.baseToken.address)} target="_blank" rel="noreferrer">
+          Trade on Jupiter ↗
+        </a>
+        <a className="token-link" href={pair.url} target="_blank" rel="noreferrer">
+          DexScreener →
+        </a>
+      </div>
     </div>
   );
 }
