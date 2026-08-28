@@ -1,29 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
+import { getPhantomProvider, type PhantomPublicKey } from "../lib/phantomProvider";
 import type { WalletState } from "../types";
 
 // Public Solana RPC — fine for occasional balance lookups from a small app,
 // but it's shared/rate-limited infrastructure, not meant for heavy traffic.
 const SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com";
-
-interface PhantomPublicKey {
-  toString(): string;
-}
-
-interface PhantomProvider {
-  isPhantom?: boolean;
-  publicKey: PhantomPublicKey | null;
-  connect: (opts?: { onlyIfTrusted?: boolean }) => Promise<{ publicKey: PhantomPublicKey }>;
-  disconnect: () => Promise<void>;
-  on: (event: string, handler: (...args: unknown[]) => void) => void;
-  removeListener: (event: string, handler: (...args: unknown[]) => void) => void;
-}
-
-function getPhantomProvider(): PhantomProvider | null {
-  const w = window as unknown as { phantom?: { solana?: PhantomProvider }; solana?: PhantomProvider };
-  if (w.phantom?.solana?.isPhantom) return w.phantom.solana;
-  if (w.solana?.isPhantom) return w.solana;
-  return null;
-}
 
 async function fetchSolBalance(publicKey: string): Promise<number> {
   const res = await fetch(SOLANA_RPC_URL, {

@@ -1,5 +1,9 @@
+import type { usePhantomWallet } from "../hooks/usePhantomWallet";
 import type { TrendingToken } from "../types";
+import QuickBuy from "./QuickBuy";
 import Sparkline from "./Sparkline";
+
+type Wallet = ReturnType<typeof usePhantomWallet>;
 
 function fmtUsd(n: number | null | undefined) {
   if (n === null || n === undefined) return "—";
@@ -29,16 +33,13 @@ function fmtAge(createdAt: number | null) {
   return `${Math.round(hours / 24)}d`;
 }
 
-function jupiterSwapUrl(mint: string) {
-  return `https://jup.ag/swap/SOL-${mint}`;
-}
-
 interface Props {
   token: TrendingToken;
   priceHistory: number[];
+  wallet: Wallet;
 }
 
-export default function TrendingTokenCard({ token, priceHistory }: Props) {
+export default function TrendingTokenCard({ token, priceHistory, wallet }: Props) {
   const { pair, risk } = token;
   const h1Change = pair.priceChange?.h1;
   const txns = pair.txns?.h1;
@@ -99,14 +100,11 @@ export default function TrendingTokenCard({ token, priceHistory }: Props) {
         ))}
       </ul>
 
-      <div className="token-card-actions">
-        <a className="trade-btn" href={jupiterSwapUrl(pair.baseToken.address)} target="_blank" rel="noreferrer">
-          Trade on Jupiter ↗
-        </a>
-        <a className="token-link" href={pair.url} target="_blank" rel="noreferrer">
-          DexScreener →
-        </a>
-      </div>
+      <QuickBuy mint={pair.baseToken.address} symbol={pair.baseToken.symbol} wallet={wallet} />
+
+      <a className="token-link token-link-verify" href={pair.url} target="_blank" rel="noreferrer">
+        Verify on DexScreener →
+      </a>
     </div>
   );
 }

@@ -215,21 +215,24 @@ body {
 .wallet-connected {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 13px;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.16), rgba(124, 58, 237, 0.04));
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13.5px;
 }
 
 .wallet-address {
   font-family: ui-monospace, monospace;
-  color: var(--text);
+  color: var(--text-dim);
+  font-size: 12px;
 }
 
 .wallet-balance {
-  color: var(--text-dim);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 15px;
 }
 
 .wallet-btn-disconnect {
@@ -430,29 +433,6 @@ body {
   margin-bottom: 3px;
 }
 
-.token-card-actions {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  border-top: 1px solid var(--panel-border);
-  padding-top: 12px;
-}
-
-.trade-btn {
-  background: linear-gradient(135deg, var(--orange), var(--red));
-  color: white;
-  font-size: 12.5px;
-  font-weight: 700;
-  padding: 7px 14px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: filter 0.15s ease;
-}
-
-.trade-btn:hover {
-  filter: brightness(1.1);
-}
-
 .token-link {
   font-size: 12px;
   color: #60a5fa;
@@ -461,4 +441,143 @@ body {
 
 .token-link:hover {
   text-decoration: underline;
+}
+
+.token-link-verify {
+  display: block;
+  margin-top: 10px;
+}
+
+/* Quick buy */
+
+.quick-buy {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 12px;
+}
+
+.quick-buy-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.preset-btn {
+  background: linear-gradient(135deg, var(--orange), var(--red));
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.preset-btn:hover:not(:disabled) {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.preset-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.connect-to-buy-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #8b5cf6, var(--purple));
+}
+
+.buy-confirm-panel {
+  margin-top: 10px;
+  background: #0c1220;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+}
+
+.buy-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.buy-impact {
+  font-size: 12px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.impact-ok {
+  color: var(--green);
+}
+
+.impact-high {
+  color: var(--amber);
+}
+
+.impact-severe {
+  color: var(--red);
+}
+
+.buy-slippage-note {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.buy-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.confirm-buy-btn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--green), #16a34a);
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.confirm-buy-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.confirm-buy-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  background: #374151;
+}
+
+.cancel-buy-btn {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.buy-status {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.buy-status-success {
+  color: var(--green);
+}
+
+.buy-status-error {
+  color: var(--red);
+  margin-bottom: 10px;
 }

@@ -1,12 +1,13 @@
-import { usePhantomWallet } from "../hooks/usePhantomWallet";
+import type { usePhantomWallet } from "../hooks/usePhantomWallet";
 
 function truncate(address: string) {
   return `${address.slice(0, 4)}…${address.slice(-4)}`;
 }
 
-export default function WalletConnect() {
-  const { connected, connecting, publicKey, solBalance, error, hasProvider, connect, disconnect } =
-    usePhantomWallet();
+type Wallet = ReturnType<typeof usePhantomWallet>;
+
+export default function WalletConnect({ wallet }: { wallet: Wallet }) {
+  const { connected, connecting, publicKey, solBalance, error, hasProvider, connect, disconnect } = wallet;
 
   if (!hasProvider) {
     return (

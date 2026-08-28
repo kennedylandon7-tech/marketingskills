@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchPairsForTokens, fetchTrendingSolanaPairs } from "../api/dexscreener";
+import { usePhantomWallet } from "../hooks/usePhantomWallet";
 import { assessRisk } from "../lib/riskScore";
 import type { TrendingToken } from "../types";
 import TrendingTokenCard from "./TrendingTokenCard";
@@ -10,6 +11,7 @@ const PRICE_TICK_MS = 10_000; // live price refresh for the current set
 const MAX_HISTORY_POINTS = 40;
 
 export default function TrendingView() {
+  const wallet = usePhantomWallet();
   const [tokens, setTokens] = useState<TrendingToken[]>([]);
   const [priceHistory, setPriceHistory] = useState<Record<string, number[]>>({});
   const [loading, setLoading] = useState(true);
@@ -91,18 +93,21 @@ export default function TrendingView() {
   return (
     <div>
       <div className="meme-disclaimer">
-        <strong>Extreme risk zone.</strong> These are brand-new or recently-promoted Solana
-        tokens, discovered via DexScreener's public boost feed. Discovery ≠ endorsement — being
-        listed here just means the token is active and listed, not that it's legitimate.
-        The large majority of tokens like these lose most or all of their value, and many are
-        outright scams (rug pulls, honeypots, wash-traded volume). There is no trade setup, buy
-        signal, or automated trading here — only live market data, computed risk flags, and a
-        manual link to trade elsewhere if you choose to. Never risk money you can't afford to
-        lose completely, and verify contract/liquidity details yourself before doing anything.
+        <strong>Extreme risk zone — real funds, real trades.</strong> These are brand-new or
+        recently-promoted Solana tokens, discovered via DexScreener's public boost feed.
+        Discovery ≠ endorsement — being listed here just means the token is active and listed,
+        not that it's legitimate. The large majority of tokens like these lose most or all of
+        their value, and many are outright scams (rug pulls, honeypots, wash-traded volume).
+        Buy buttons on this page build a real swap and ask <strong>your connected Phantom
+        wallet</strong> to approve it — nothing executes without your explicit approval in
+        Phantom's own popup, but once approved it is a real on-chain transaction that cannot be
+        undone. There is no buy signal or recommendation here, only live market data and
+        computed risk flags. Never risk money you can't afford to lose completely, and verify
+        contract/liquidity details yourself before doing anything.
       </div>
 
       <div className="view-controls">
-        <WalletConnect />
+        <WalletConnect wallet={wallet} />
         <button className="refresh-btn" onClick={runDiscovery} disabled={loading}>
           {loading ? "Scanning…" : "Rescan now"}
         </button>
@@ -122,6 +127,7 @@ export default function TrendingView() {
             key={t.pair.baseToken.address}
             token={t}
             priceHistory={priceHistory[t.pair.baseToken.address] ?? []}
+            wallet={wallet}
           />
         ))}
       </div>
