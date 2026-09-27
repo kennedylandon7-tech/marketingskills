@@ -93,8 +93,9 @@ export default function Knock() {
       <Card style={{ backgroundColor: '#EEF9D2', borderColor: '#DDEFA8' }}>
         <Text style={{ fontWeight: '800', color: colors.primaryDark }}>How you get paid</Text>
         <Muted style={{ marginTop: 4, color: colors.primaryDark }}>
-          You earn 12% of every job the business accepts. Close one $150 driveway an hour and that's about $18/hr,
-          with no gas and no car. Earnings depend on your closes and are not guaranteed.
+          Doorden pays you a 12% bonus on every job a business accepts. It's funded by our partners, so the homeowner and
+          the business never pay it. Close one $150 driveway an hour and that's about $18/hr, with no gas and no car.
+          Earnings depend on your closes and are not guaranteed.
         </Muted>
       </Card>
 

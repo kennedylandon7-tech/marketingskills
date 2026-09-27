@@ -29,7 +29,7 @@ export default function Account() {
         <Card>
           <Muted>
             1. Set your price guideline.{'\n'}2. Reps knock doors and quote inside it.{'\n'}3. Homeowners confirm the offer in the app.
-            {'\n'}4. You accept the job and do the work. No ads, no monthly fee.
+            {'\n'}4. You accept the job and do the work. No ads, no monthly fee, no commission.
           </Muted>
         </Card>
       </Section>

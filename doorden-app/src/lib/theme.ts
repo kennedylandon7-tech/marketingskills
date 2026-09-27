@@ -15,4 +15,8 @@ export const colors = {
 
 export const radius = { sm: 8, md: 14, lg: 22, pill: 999 };
 
+/** Rep bonus rate. Paid by Doorden from partner revenue, never by the business or homeowner. */
 export const COMMISSION_RATE = 0.12;
+
+/** Brand partner shown on the bonus. Swap in each signed partner. */
+export const BONUS_PARTNER = { name: 'Your Brand Here', tagline: 'Rep bonuses powered by our partners' };

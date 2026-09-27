@@ -4,7 +4,7 @@ import { Text, TextInput } from 'react-native';
 
 import { Button, Card, Muted, Row, Screen, StatusPill, Title, styles as ui } from '../components/ui';
 import { money, unitLabel, useStore } from '../lib/store';
-import { colors } from '../lib/theme';
+import { BONUS_PARTNER, colors } from '../lib/theme';
 
 export default function Verify() {
   const params = useLocalSearchParams<{ code?: string }>();
@@ -58,6 +58,9 @@ export default function Verify() {
               />
               <Muted style={{ fontSize: 12, marginTop: 10, textAlign: 'center' }}>
                 Nothing is charged now. You pay the business directly after the job is done.
+              </Muted>
+              <Muted style={{ fontSize: 12, marginTop: 6, textAlign: 'center' }}>
+                {BONUS_PARTNER.tagline} · {BONUS_PARTNER.name}
               </Muted>
             </>
           ) : (

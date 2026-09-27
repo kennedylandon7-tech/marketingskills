@@ -33,7 +33,7 @@ export default function Businesses() {
             </Muted>
             <Row style={{ marginTop: 8 }}>
               {servesHere ? <Pill label="Serves your neighborhood" /> : <Pill label="Other areas" color={colors.muted} />}
-              <Pill label="12% to you" color={colors.primaryDark} bg={colors.accent} />
+              <Pill label="12% bonus to you" color={colors.primaryDark} bg={colors.accent} />
             </Row>
           </Card>
         );

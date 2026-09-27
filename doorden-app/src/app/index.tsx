@@ -9,8 +9,8 @@ import { colors, radius } from '../lib/theme';
 import type { Role } from '../lib/types';
 
 const roles: { role: Role; emoji: string; title: string; body: string }[] = [
-  { role: 'rep', emoji: '🚪', title: 'I want to earn', body: 'Knock doors on your schedule. 12% of every job you close.' },
-  { role: 'business', emoji: '🧰', title: 'I run a local business', body: 'Get free, homeowner-verified jobs. You only do the work.' },
+  { role: 'rep', emoji: '🚪', title: 'I want to earn', body: 'Knock doors on your schedule. Earn a 12% bonus on every job you close.' },
+  { role: 'business', emoji: '🧰', title: 'I run a local business', body: 'Get free, homeowner-verified jobs. Keep 100% of every job.' },
   { role: 'homeowner', emoji: '🏡', title: 'I got a quote', body: 'Verify the offer a rep gave you at your door.' },
 ];
 

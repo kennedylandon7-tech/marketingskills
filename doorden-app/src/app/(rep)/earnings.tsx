@@ -2,7 +2,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 
 import { Button, Card, Muted, Row, Screen, Section, Stat, Title } from '../../components/ui';
 import { money, repStats, useStore } from '../../lib/store';
-import { colors, radius } from '../../lib/theme';
+import { BONUS_PARTNER, colors, radius } from '../../lib/theme';
 
 export default function Earnings() {
   const { state, dispatch } = useStore();
@@ -19,11 +19,12 @@ export default function Earnings() {
 
   return (
     <Screen>
-      <Title sub="12% commission on every job a business accepts.">Earnings</Title>
+      <Title sub="Doorden pays a 12% bonus on every job a business accepts.">Earnings</Title>
 
       <View style={s.balance}>
         <Text style={s.balanceLabel}>AVAILABLE BALANCE</Text>
         <Text style={s.balanceValue}>{money(st.balance)}</Text>
+        <Text style={s.partner}>{BONUS_PARTNER.tagline} · {BONUS_PARTNER.name}</Text>
         <Button label="Cash out" kind="accent" disabled={st.balance <= 0} onPress={cashOut} style={{ marginTop: 14 }} />
       </View>
 
@@ -49,7 +50,7 @@ export default function Earnings() {
                 <Text style={{ fontWeight: '700' }}>{l.homeowner.name}</Text>
                 <Text style={{ fontWeight: '800', color: colors.primary }}>+{money(l.commission)}</Text>
               </Row>
-              <Muted>12% of {money(l.total)}</Muted>
+              <Muted>12% bonus on a {money(l.total)} job</Muted>
             </Card>
           ))
         )}
@@ -75,4 +76,5 @@ const s = StyleSheet.create({
   balance: { backgroundColor: colors.primaryDark, borderRadius: radius.lg, padding: 20 },
   balanceLabel: { color: colors.accent, fontWeight: '800', fontSize: 12, letterSpacing: 1 },
   balanceValue: { color: '#fff', fontSize: 40, fontWeight: '900', marginTop: 4 },
+  partner: { color: '#CFE3D8', fontSize: 12, marginTop: 4 },
 });

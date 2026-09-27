@@ -2,7 +2,7 @@
 
 **Get paid to knock. Skills, not miles.**
 
-Doorden works like DoorDash, but for door-to-door sales. Reps pick a neighborhood, knock on doors, and log every "yes." The homeowner confirms the offer in the app, and a local business picks up the job. The rep earns **12% of every job the business accepts**. There's no car, no gas, and no boss.
+Doorden works like DoorDash, but for door-to-door sales. Reps pick a neighborhood, knock on doors, and log every "yes." The homeowner confirms the offer in the app, and a local business picks up the job. The rep earns a **12% bonus on every job the business accepts**, paid by Doorden. There's no car, no gas, and no boss.
 
 ## How it works
 
@@ -10,10 +10,25 @@ Doorden works like DoorDash, but for door-to-door sales. Reps pick a neighborhoo
 2. **The rep** picks a neighborhood, taps **Start knocking**, and pitches: "Want your driveway power washed for $150?"
 3. When someone says yes, the rep taps **They said yes!**, picks the business and service, quotes inside the guideline, and enters the homeowner's info.
 4. **The homeowner** gets a text with a 6-character code and a link, then confirms the offer in the app.
-5. **The business** sees the verified job and taps **Accept job**. The rep's 12% moves to their balance.
+5. **The business** sees the verified job and taps **Accept job**. The rep's 12% bonus moves to their balance.
 6. The business calls the homeowner, does the work, and marks the job complete.
 
 Example: one $150 driveway closed per hour earns about $18/hr. Earnings depend on closes and are not guaranteed.
+
+## Business model: who pays the 12%
+
+**Not the business, and not the homeowner.** Local businesses get jobs 100% free and keep every dollar. Doorden pays each rep's 12% bonus from **partner revenue**: companies that pay to be the brand behind the bonus and to reach verified homeowners.
+
+| Who | Pays | Gets |
+|-----|------|------|
+| Homeowner | The business's normal price, after the job | A fair, pre-set price from a trusted local pro |
+| Local business | $0 | Free, homeowner-verified jobs |
+| Rep | $0 | 12% bonus per accepted job, their own hours |
+| **Partner** | Sponsorship (funds the bonuses + Doorden's margin) | Brand on every offer and payout, and opt-in homeowner reach |
+
+The partner shown in the app lives in `BONUS_PARTNER` in `src/lib/theme.ts`. See [`docs/PARTNER_PITCH.md`](docs/PARTNER_PITCH.md) for the pitch.
+
+**Math to watch:** every accepted job costs Doorden 12% of the job price (a $160 driveway = $19.20). Sign partner deals that cover that before scaling reps. A per-verified-job sponsorship fee that is higher than the average bonus keeps each job profitable.
 
 ## What's in the app
 

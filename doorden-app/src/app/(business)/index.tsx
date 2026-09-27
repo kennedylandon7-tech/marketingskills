@@ -18,7 +18,7 @@ export default function BusinessJobs() {
   const accept = (l: Lead) =>
     Alert.alert(
       'Accept this job?',
-      `${money(l.total)} job. The rep's 12% commission (${money(l.commission)}) is paid out when you accept.`,
+      `${money(l.total)} job, free to you. You keep the full ${money(l.total)}. Doorden pays the rep's ${money(l.commission)} bonus.`,
       [
         { text: 'Cancel', style: 'cancel' },
         { text: 'Accept job', onPress: () => dispatch({ type: 'setLeadStatus', leadId: l.id, status: 'accepted' }) },
@@ -59,7 +59,7 @@ export default function BusinessJobs() {
         <Card style={{ flex: 1 }}><Stat label="Ready to accept" value={String(ready.length)} /></Card>
         <Card style={{ flex: 1 }}><Stat label="Booked revenue" value={money(booked)} /></Card>
       </Row>
-      <Muted style={{ fontSize: 12 }}>Listing on Doorden is free. You only pay the rep's 12% on jobs you accept.</Muted>
+      <Muted style={{ fontSize: 12 }}>Doorden jobs are 100% free. Reps earn a 12% bonus paid by Doorden and our partners, so you keep every dollar.</Muted>
 
       <Section title="Homeowner verified">
         {ready.length === 0 ? (
@@ -67,7 +67,7 @@ export default function BusinessJobs() {
         ) : (
           ready.map((l) => (
             <JobCard key={l.id} l={l}>
-              <Muted style={{ marginTop: 8 }}>Rep commission: {money(l.commission)} (12%)</Muted>
+              <Muted style={{ marginTop: 8 }}>Rep bonus: {money(l.commission)}, paid by Doorden, not you</Muted>
               <Row style={{ marginTop: 10 }}>
                 <Button label="Pass" kind="ghost" style={{ flex: 1 }} onPress={() => dispatch({ type: 'setLeadStatus', leadId: l.id, status: 'declined' })} />
                 <Button label="Accept job" style={{ flex: 2 }} onPress={() => accept(l)} />
